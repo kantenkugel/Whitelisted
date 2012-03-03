@@ -28,6 +28,10 @@ public class Whitelist extends JavaPlugin {
 	}
 	
 	public void onDisable() {
+		refreshlist();
+		this.getConfig().set("Whitelist", whitelisted);
+		this.getConfig().set("Config.ShowLog", showconsolelog);
+		this.saveConfig();
 		logger.info(chatprefix + "is now disabled!");
 	}
 	
@@ -101,7 +105,7 @@ public class Whitelist extends JavaPlugin {
 	public void refreshlist() {
 		this.reloadConfig();
 		whitelisted = this.getConfig().getStringList("Whitelist");
-		showconsolelog = this.getConfig().getBoolean("Config.ShowLog", true);
+		showconsolelog = this.getConfig().getBoolean("Config.ShowLog", false);
 	}
 	
 	
