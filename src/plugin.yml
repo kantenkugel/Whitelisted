@@ -1,12 +1,12 @@
-name: Whitelist
-version: 1.0.0
+name: Whitelisted
+version: 1.0.1
 description: This plugin lets you whitelist players via file or commands
 author: Kantenkugel
 
-main: me.kantenkugel.serveress.whitelist.Whitelist
+main: me.kantenkugel.serveress.whitelisted.Whitelisted
 
 commands:
-    whitelist:
+    whitelisted:
         description: Prints the help with subcommands.
         usage: |
             Usage:
@@ -18,14 +18,14 @@ commands:
     
 
 permissions:
-    whitelist.*:
-        description: allows access to all of whitelists functions
+    whitelisted.*:
+        description: allows access to all of whitelisteds functions
         children:
-            whitelist.admin: true
-            whitelist.join: true
-    whitelist.admin:
+            whitelisted.admin: true
+            whitelisted.join: true
+    whitelisted.admin:
         description: grants you access to the ingame-commands
         default: op
-    whitelist.join:
+    whitelisted.join:
         description: lets you join even if your not in the whitelist-file
         default: op
