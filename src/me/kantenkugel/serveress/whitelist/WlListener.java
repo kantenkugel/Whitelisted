@@ -2,7 +2,6 @@ package me.kantenkugel.serveress.whitelist;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -14,7 +13,7 @@ public class WlListener implements Listener {
 		plugin = instance;
 	}
 	
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler
 	public void wllogin(PlayerLoginEvent event) {
 		Player pl = event.getPlayer();
 		plugin.refreshlist();
@@ -23,10 +22,7 @@ public class WlListener implements Listener {
 			if(plugin.whitelisted.contains(pl.getName().toLowerCase())) {
 				if(plugin.showconsolelog) plugin.logger.info(plugin.chatprefix + "...deny!");
 				event.disallow(Result.KICK_WHITELIST, "Sorry but you're not whitelisted");
-				return;
-			}
-		}
-		if(plugin.showconsolelog) plugin.logger.info(plugin.chatprefix + "... allow!");
-		
+			} else if(plugin.showconsolelog) plugin.logger.info(plugin.chatprefix + "... allow!");
+		} else if(plugin.showconsolelog) plugin.logger.info(plugin.chatprefix + "... allow!");
 	}
 }
