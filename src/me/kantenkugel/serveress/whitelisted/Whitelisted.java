@@ -12,7 +12,11 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Whitelisted extends JavaPlugin {
+	//public boolean SqlOn, SqlEn;												//SqlOn -> No errors; SqlEn -> Config
+	//public boolean Customtable, SqlMode;										//SqlMode: 0->Own, 1->External
+	//public String Sqlname;
 	public String chatprefix;
+	public String whitelistmsg;
 	public boolean showconsolelog;
 	public PluginDescriptionFile pdf;
 	public final Logger logger = Logger.getLogger("Minecraft");
@@ -23,15 +27,12 @@ public class Whitelisted extends JavaPlugin {
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new WlListener(this), this);
 		chatprefix = "["+pdf.getName()+"] ";
-		
+		this.getConfig().options().copyDefaults(true);
+		this.saveConfig();
 		logger.info(chatprefix + "v" + pdf.getVersion() + " is now enabled!");
 	}
 	
 	public void onDisable() {
-		refreshlist();
-		this.getConfig().set("Whitelist", whitelisted);
-		this.getConfig().set("Config.ShowLog", showconsolelog);
-		this.saveConfig();
 		logger.info(chatprefix + "is now disabled!");
 	}
 	
@@ -71,6 +72,7 @@ public class Whitelisted extends JavaPlugin {
 				break;
 			case "rem":
 			case "remove":
+			case "rm":
 				if(args.length != 2) {
 					report(sender, "You have to specify a player.", ChatColor.RED);
 					report(sender, "e.g. /whitelist rem Steve", ChatColor.RED);
@@ -106,6 +108,8 @@ public class Whitelisted extends JavaPlugin {
 		this.reloadConfig();
 		whitelisted = this.getConfig().getStringList("Whitelist");
 		showconsolelog = this.getConfig().getBoolean("Config.ShowLog", false);
+		whitelistmsg = this.getConfig().getString("Config.WhitelistMsg", "You are not whitelisted!");
+		
 	}
 	
 	

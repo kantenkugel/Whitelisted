@@ -1,0 +1,6 @@
+Whitelist:
+- playertowhitelist
+- playertowhitelist2
+Config:
+  ShowLog: false
+  WhitelistMsg: "You are not whitelisted!"
