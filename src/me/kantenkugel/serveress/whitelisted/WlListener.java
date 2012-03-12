@@ -18,7 +18,7 @@ public class WlListener implements Listener {
 		Player pl = event.getPlayer();
 		plugin.refreshlist();
 		if(plugin.showconsolelog) plugin.logger.info(plugin.chatprefix + "Player " + pl.getName() + " wants to join...");
-		if(!(pl.hasPermission("whitelist.join"))) {
+		if(!(pl.hasPermission("whitelisted.join"))) {
 			if(!(plugin.whitelisted.contains(pl.getName().toLowerCase()))) {
 				if(plugin.showconsolelog) plugin.logger.info(plugin.chatprefix + "...deny!");
 				event.disallow(Result.KICK_WHITELIST, plugin.whitelistmsg);

@@ -37,7 +37,7 @@ public class Whitelisted extends JavaPlugin {
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(sender instanceof Player && !(sender.hasPermission("whitelist.admin"))) {
+		if(sender instanceof Player && !(sender.hasPermission("whitelisted.admin"))) {
 			sender.sendMessage(ChatColor.RED + chatprefix + "You dont have the Permission to do that!");
 			return true;
 		} else if(args.length > 0) {
