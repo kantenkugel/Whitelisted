@@ -2,5 +2,6 @@ Whitelist:
 - playertowhitelist
 - playertowhitelist2
 Config:
+  Notify: true
   ShowLog: false
   WhitelistMsg: "You are not whitelisted!"

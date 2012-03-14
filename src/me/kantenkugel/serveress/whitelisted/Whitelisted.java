@@ -17,10 +17,10 @@ public class Whitelisted extends JavaPlugin {
 	//public String Sqlname;
 	public String chatprefix;
 	public String whitelistmsg;
-	public boolean showconsolelog;
+	public boolean showconsolelog, notify;
 	public PluginDescriptionFile pdf;
 	public final Logger logger = Logger.getLogger("Minecraft");
-	public List<String> whitelisted;
+	public List<String> whitelisted, denylist;
 	
 	public void onEnable() {
 		pdf = this.getDescription();
@@ -60,13 +60,10 @@ public class Whitelisted extends JavaPlugin {
 					report(sender, "You have to specify a player.", ChatColor.RED);
 					report(sender, "e.g. /whitelist add Steve", ChatColor.RED);
 				} else {
-					refreshlist();
-					if(whitelisted.contains(args[1].toLowerCase())) report(sender, "That Player is already whitelisted", ChatColor.GOLD);
-					else {
-						whitelisted.add(args[1].toLowerCase());
-						this.getConfig().set("Whitelist", whitelisted);
-						this.saveConfig();
+					if(wladd(args[1].toLowerCase())) {
 						report(sender, "Player added to whitelist", ChatColor.GREEN);
+					} else {
+						report(sender, "That Player is already whitelisted", ChatColor.GOLD);
 					}
 				}
 				break;
@@ -107,11 +104,41 @@ public class Whitelisted extends JavaPlugin {
 	public void refreshlist() {
 		this.reloadConfig();
 		whitelisted = this.getConfig().getStringList("Whitelist");
+		denylist = this.getConfig().getStringList("Denylist");
 		showconsolelog = this.getConfig().getBoolean("Config.ShowLog", false);
+		notify = this.getConfig().getBoolean("Config.Notify");
 		whitelistmsg = this.getConfig().getString("Config.WhitelistMsg", "You are not whitelisted!");
 		
 	}
 	
+	public boolean wldeny(String player) {
+		this.refreshlist();
+		if(denylist.contains(player)) return false;
+		else {
+			if(whitelisted.contains(player)) {
+				whitelisted.remove(player);
+				this.getConfig().set("Whitelist", whitelisted);
+			}
+			denylist.add(player);
+			this.getConfig().set("Denylist", denylist);
+			this.saveConfig();
+			return true;
+		}
+	}	
 	
+	public boolean wladd(String player) {
+		this.refreshlist();
+		if(whitelisted.contains(player)) return false;
+		else {
+			if(denylist.contains(player)) {
+				denylist.remove(player);
+				this.getConfig().set("Denylist", denylist);
+			}
+			whitelisted.add(player);
+			this.getConfig().set("Whitelist", whitelisted);
+			this.saveConfig();
+			return true;
+		}
+	}	
 
 }
