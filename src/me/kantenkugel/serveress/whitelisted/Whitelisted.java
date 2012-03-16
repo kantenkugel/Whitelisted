@@ -61,12 +61,23 @@ public class Whitelisted extends JavaPlugin {
 					report(sender, "e.g. /whitelist add Steve", ChatColor.RED);
 				} else {
 					if(wladd(args[1].toLowerCase())) {
-						report(sender, "Player added to whitelist", ChatColor.GREEN);
+						report(sender, "Player "+args[1]+" added to whitelist", ChatColor.GREEN);
 					} else {
 						report(sender, "That Player is already whitelisted", ChatColor.GOLD);
 					}
 				}
 				break;
+			case "deny":
+				if(args.length != 2) {
+					report(sender, "You have to specify a player.", ChatColor.RED);
+					report(sender, "e.g. /whitelist add Steve", ChatColor.RED);
+				} else {
+					if(wldeny(args[1].toLowerCase())) {
+						report(sender, "Player "+args[1]+" has been moved to the deny-list", ChatColor.GREEN);
+					} else {
+						report(sender, "That Player is already denied", ChatColor.GOLD);
+					}
+				}
 			case "rem":
 			case "remove":
 			case "rm":
@@ -74,13 +85,10 @@ public class Whitelisted extends JavaPlugin {
 					report(sender, "You have to specify a player.", ChatColor.RED);
 					report(sender, "e.g. /whitelist rem Steve", ChatColor.RED);
 				} else {
-					refreshlist();
-					if(whitelisted.contains(args[1].toLowerCase()) == false) report(sender, "That Player is not whitelisted", ChatColor.GOLD);
-					else {
-						whitelisted.remove(args[1].toLowerCase());
-						this.getConfig().set("Whitelist", whitelisted);
-						this.saveConfig();
+					if(wlremove(args[1].toLowerCase())) {
 						report(sender, "Player removed from whitelist", ChatColor.GREEN);
+					} else {
+						report(sender, "That player is not whitelisted!", ChatColor.GOLD);
 					}
 					
 				}
@@ -124,7 +132,18 @@ public class Whitelisted extends JavaPlugin {
 			this.saveConfig();
 			return true;
 		}
-	}	
+	}
+	
+	public boolean wlremove(String player) {
+		this.refreshlist();
+		if(!(whitelisted.contains(player))) return false;
+		else {
+			whitelisted.remove(player);
+			this.getConfig().set("Whitelist", whitelisted);
+			this.saveConfig();
+			return true;
+		}
+	}
 	
 	public boolean wladd(String player) {
 		this.refreshlist();
