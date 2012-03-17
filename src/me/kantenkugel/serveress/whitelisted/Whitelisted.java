@@ -70,7 +70,7 @@ public class Whitelisted extends JavaPlugin {
 			case "deny":
 				if(args.length != 2) {
 					report(sender, "You have to specify a player.", ChatColor.RED);
-					report(sender, "e.g. /whitelist add Steve", ChatColor.RED);
+					report(sender, "e.g. /whitelist deny Steve", ChatColor.RED);
 				} else {
 					if(wldeny(args[1].toLowerCase())) {
 						report(sender, "Player "+args[1]+" has been moved to the deny-list", ChatColor.GREEN);
