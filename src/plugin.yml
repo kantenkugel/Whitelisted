@@ -13,6 +13,7 @@ commands:
             /<command> - Prints the help.
             /<command> add PLAYER - Adds a Player to the Whitelist
             /<command> rem PLAYER - Removes a Player from the Whitelist
+            /<command> deny PLAYER - Denies the Player so no Notice is printed again.
             /<command> list - Lists all the Players that are Whitelisted
         aliases: wl
     
