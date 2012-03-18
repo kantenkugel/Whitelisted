@@ -88,7 +88,7 @@ public class Whitelisted extends JavaPlugin {
 					report(sender, "e.g. /whitelist rem Steve", ChatColor.RED);
 				} else {
 					if(wlremove(args[1].toLowerCase())) {
-						report(sender, "Player removed from whitelist", ChatColor.GREEN);
+						report(sender, "Player "+args[1]+" removed from whitelist", ChatColor.GREEN);
 					} else {
 						report(sender, "That player is not whitelisted!", ChatColor.GOLD);
 					}
