@@ -15,6 +15,7 @@ public class Whitelisted extends JavaPlugin {
 	//public boolean SqlOn, SqlEn;												//SqlOn -> No errors; SqlEn -> Config
 	//public boolean Customtable, SqlMode;										//SqlMode: 0->Own, 1->External
 	//public String Sqlname;
+	//private Class whitelistadapter;
 	public String chatprefix;
 	public String whitelistmsg;
 	public boolean showconsolelog, notify;
@@ -78,6 +79,7 @@ public class Whitelisted extends JavaPlugin {
 						report(sender, "That Player is already denied", ChatColor.GOLD);
 					}
 				}
+				break;
 			case "rem":
 			case "remove":
 			case "rm":
