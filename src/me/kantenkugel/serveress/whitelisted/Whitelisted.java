@@ -16,7 +16,7 @@ public class Whitelisted extends JavaPlugin {
 	//public String Sqlname;
 	public Whitelist whitelist;
 	public String chatprefix;
-	public String whitelistmsg;
+	public String whitelistmsg, notifymsg, noadminmsg, trylatermsg;
 	public boolean showconsolelog, notify;
 	public PluginDescriptionFile pdf;
 	public final Logger logger = Logger.getLogger("Minecraft");
@@ -30,6 +30,7 @@ public class Whitelisted extends JavaPlugin {
 		chatprefix = "["+pdf.getName()+"] ";
 		this.getConfig().options().copyDefaults(true);
 		this.saveConfig();
+		reloadc();
 		logger.info(chatprefix + "v" + pdf.getVersion() + " is now enabled!");
 	}
 	
@@ -90,6 +91,10 @@ public class Whitelisted extends JavaPlugin {
 					
 				}
 				break;
+			case "reload":
+				reloadc();
+				report(sender, "Config reloaded!", ChatColor.BLUE);
+				break;
 			default:
 				return false;
 			}
@@ -104,6 +109,16 @@ public class Whitelisted extends JavaPlugin {
 		} else if(sender instanceof Player) {
 			sender.sendMessage(color + chatprefix + msg);
 		}	
+	}
+	
+	private void reloadc() {
+		this.reloadConfig();
+		notify = this.getConfig().getBoolean("Config.Notify", true);
+		showconsolelog = this.getConfig().getBoolean("Config.ShowLog", false);
+		whitelistmsg = this.getConfig().getString("Config.Msg.NotWhitelisted", "You are not Whitelisted!");
+		notifymsg = this.getConfig().getString("Confog.Msg.Notified", "Your not whitelisted. An admin may add you. Try again in 20secs");
+		noadminmsg = this.getConfig().getString("Config.Msg.NoAdminOnline", "Your not whitelisted and there is no admin online");
+		trylatermsg = this.getConfig().getString("Config.Msg.TryLater", "You just tried to join... try again in 20secs");
 	}
 
 }

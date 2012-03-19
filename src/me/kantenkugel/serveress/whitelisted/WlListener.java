@@ -29,7 +29,7 @@ public class WlListener implements Listener {
 						if(queuehash.get(pl.toLowerCase()) < (System.currentTimeMillis() - 20*1000)) {					//if he tried at least 20secs before
 							queuehash.remove(pl.toLowerCase());															//delete from list, treat like first time
 						} else {																						//if recent try
-							event.disallow(Result.KICK_WHITELIST, "no admin has approved you yet");						//not approved yet
+							event.disallow(Result.KICK_WHITELIST, plugin.trylatermsg);									//not approved yet
 							return;																						//block rest of function
 						}
 					}
@@ -41,10 +41,10 @@ public class WlListener implements Listener {
 						}
 					}
 					if(!found) {																											//no admin reached
-						event.disallow(Result.KICK_WHITELIST, "Your not whitelisted and no admin online");
+						event.disallow(Result.KICK_WHITELIST, plugin.noadminmsg);
 					} else {																												//admin reached
 						queuehash.put(pl.toLowerCase(), System.currentTimeMillis());														//add to list
-						event.disallow(Result.KICK_WHITELIST, "Your not whitelisted. an admin may approve you. try again in 20secs");
+						event.disallow(Result.KICK_WHITELIST, plugin.notifymsg);
 					}
 				} else {																								//no notify or player denied
 					event.disallow(Result.KICK_WHITELIST, plugin.whitelistmsg);											//show whitelistmsg
