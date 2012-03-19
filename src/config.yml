@@ -4,4 +4,8 @@ Whitelist:
 Config:
   Notify: true
   ShowLog: false
-  WhitelistMsg: "You are not whitelisted!"
+  Msg:
+    NotWhitelisted: "You are not whitelisted!"
+    Notified: "Your not whitelisted. An admin may add you. Try again in 20secs"
+    NoAdminOnline: "Your not whitelisted and there is no admin online"
+    TryLater: "You just tried to join... try again in 20secs"

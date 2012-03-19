@@ -19,33 +19,32 @@ public class WlListener implements Listener {
 	
 	@EventHandler
 	public void wllogin(PlayerLoginEvent event) {
-		Player pl = event.getPlayer();
-		plugin.refreshlist();
-		if(plugin.showconsolelog) plugin.logger.info(plugin.chatprefix + "Player " + pl.getName() + " wants to join...");
-		if(!(pl.hasPermission("whitelisted.join"))) {
-			if(!(plugin.whitelisted.contains(pl.getName().toLowerCase()))) {
+		String pl = event.getPlayer().getName();
+		if(plugin.showconsolelog) plugin.logger.info(plugin.chatprefix + "Player " + pl + " wants to join...");
+		if(!(event.getPlayer().hasPermission("whitelisted.join"))) {
+			if(!(plugin.whitelist.isWhitelisted(pl))) {
 				if(plugin.showconsolelog) plugin.logger.info(plugin.chatprefix + "...deny!");							//deny debug output
-				if(plugin.notify && plugin.denylist.contains(pl.getName().toLowerCase()) == false) {					//notify enabled and player not denied
-					if(queuehash.containsKey(pl.getName().toLowerCase())) {												//if player tried before
-						if(queuehash.get(pl.getName().toLowerCase()) < (System.currentTimeMillis() - 20*1000)) {		//if he tried at least 20secs before
-							queuehash.remove(pl.getName().toLowerCase());												//delete from list, treat like first time
+				if(plugin.notify && !plugin.whitelist.isDenied(pl)) {													//notify enabled and player not denied
+					if(queuehash.containsKey(pl.toLowerCase())) {														//if player tried before
+						if(queuehash.get(pl.toLowerCase()) < (System.currentTimeMillis() - 20*1000)) {					//if he tried at least 20secs before
+							queuehash.remove(pl.toLowerCase());															//delete from list, treat like first time
 						} else {																						//if recent try
-							event.disallow(Result.KICK_WHITELIST, "no admin has approved you yet");						//not approved yet
+							event.disallow(Result.KICK_WHITELIST, plugin.trylatermsg);									//not approved yet
 							return;																						//block rest of function
 						}
 					}
 					boolean found=false;
 					for(Player online: plugin.getServer().getOnlinePlayers()) {											//search for admins and broadcast
 						if(online.hasPermission("whitelisted.admin")) {
-							online.sendMessage(ChatColor.YELLOW+plugin.chatprefix+"Player "+pl.getName()+" is trying to join... add/deny?");
+							online.sendMessage(ChatColor.YELLOW+plugin.chatprefix+"Player "+pl+" is trying to join... add/deny?");
 							found=true;
 						}
 					}
-					if(!found) {																												//no admin reached
-						event.disallow(Result.KICK_WHITELIST, "Your not whitelisted and no admin online");
+					if(!found) {																											//no admin reached
+						event.disallow(Result.KICK_WHITELIST, plugin.noadminmsg);
 					} else {																												//admin reached
-						queuehash.put(pl.getName().toLowerCase(), System.currentTimeMillis());												//add to list
-						event.disallow(Result.KICK_WHITELIST, "Your not whitelisted. an admin may approve you. try again in 20secs");
+						queuehash.put(pl.toLowerCase(), System.currentTimeMillis());														//add to list
+						event.disallow(Result.KICK_WHITELIST, plugin.notifymsg);
 					}
 				} else {																								//no notify or player denied
 					event.disallow(Result.KICK_WHITELIST, plugin.whitelistmsg);											//show whitelistmsg

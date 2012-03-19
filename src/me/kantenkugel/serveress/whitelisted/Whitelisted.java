@@ -1,6 +1,5 @@
 package me.kantenkugel.serveress.whitelisted;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -15,20 +14,23 @@ public class Whitelisted extends JavaPlugin {
 	//public boolean SqlOn, SqlEn;												//SqlOn -> No errors; SqlEn -> Config
 	//public boolean Customtable, SqlMode;										//SqlMode: 0->Own, 1->External
 	//public String Sqlname;
+	public Whitelist whitelist;
 	public String chatprefix;
-	public String whitelistmsg;
+	public String whitelistmsg, notifymsg, noadminmsg, trylatermsg;
 	public boolean showconsolelog, notify;
 	public PluginDescriptionFile pdf;
 	public final Logger logger = Logger.getLogger("Minecraft");
-	public List<String> whitelisted, denylist;
+	//public List<String> whitelisted, denylist;
 	
 	public void onEnable() {
+		whitelist = new WlFileA(this);
 		pdf = this.getDescription();
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new WlListener(this), this);
 		chatprefix = "["+pdf.getName()+"] ";
 		this.getConfig().options().copyDefaults(true);
 		this.saveConfig();
+		reloadc();
 		logger.info(chatprefix + "v" + pdf.getVersion() + " is now enabled!");
 	}
 	
@@ -43,24 +45,19 @@ public class Whitelisted extends JavaPlugin {
 		} else if(args.length > 0) {
 			switch(args[0].toLowerCase()) {
 			case "list":
-				refreshlist();
-				if(whitelisted.isEmpty()) {
-					report(sender, "No Players are whitelisted!", ChatColor.YELLOW);
-					break;
+				String list = whitelist.getList();
+				if(list == "") report(sender, "No Players are whitelisted!", ChatColor.RED);
+				else {
+					report(sender, "Players in list: ", ChatColor.YELLOW);
+					report(sender, list, ChatColor.GREEN);
 				}
-				String seplist = "";
-				for(String pl: whitelisted) {
-					seplist = seplist + pl + ", ";
-				}
-				report(sender, "Players in list: ", ChatColor.YELLOW);
-				report(sender, seplist, ChatColor.GREEN);
 				break;
 			case "add":
 				if(args.length != 2) {
 					report(sender, "You have to specify a player.", ChatColor.RED);
 					report(sender, "e.g. /whitelist add Steve", ChatColor.RED);
 				} else {
-					if(wladd(args[1].toLowerCase())) {
+					if(whitelist.wlAdd(args[1])) {
 						report(sender, "Player "+args[1]+" added to whitelist", ChatColor.GREEN);
 					} else {
 						report(sender, "That Player is already whitelisted", ChatColor.GOLD);
@@ -72,7 +69,7 @@ public class Whitelisted extends JavaPlugin {
 					report(sender, "You have to specify a player.", ChatColor.RED);
 					report(sender, "e.g. /whitelist deny Steve", ChatColor.RED);
 				} else {
-					if(wldeny(args[1].toLowerCase())) {
+					if(whitelist.dlAdd(args[1])) {
 						report(sender, "Player "+args[1]+" has been moved to the deny-list", ChatColor.GREEN);
 					} else {
 						report(sender, "That Player is already denied", ChatColor.GOLD);
@@ -86,13 +83,17 @@ public class Whitelisted extends JavaPlugin {
 					report(sender, "You have to specify a player.", ChatColor.RED);
 					report(sender, "e.g. /whitelist rem Steve", ChatColor.RED);
 				} else {
-					if(wlremove(args[1].toLowerCase())) {
+					if(whitelist.wlRemove(args[1])) {
 						report(sender, "Player "+args[1]+" removed from whitelist", ChatColor.GREEN);
 					} else {
 						report(sender, "That player is not whitelisted!", ChatColor.GOLD);
 					}
 					
 				}
+				break;
+			case "reload":
+				reloadc();
+				report(sender, "Config reloaded!", ChatColor.BLUE);
 				break;
 			default:
 				return false;
@@ -110,55 +111,14 @@ public class Whitelisted extends JavaPlugin {
 		}	
 	}
 	
-	public void refreshlist() {
+	private void reloadc() {
 		this.reloadConfig();
-		whitelisted = this.getConfig().getStringList("Whitelist");
-		denylist = this.getConfig().getStringList("Denylist");
+		notify = this.getConfig().getBoolean("Config.Notify", true);
 		showconsolelog = this.getConfig().getBoolean("Config.ShowLog", false);
-		notify = this.getConfig().getBoolean("Config.Notify");
-		whitelistmsg = this.getConfig().getString("Config.WhitelistMsg", "You are not whitelisted!");
-		
+		whitelistmsg = this.getConfig().getString("Config.Msg.NotWhitelisted", "You are not Whitelisted!");
+		notifymsg = this.getConfig().getString("Confog.Msg.Notified", "Your not whitelisted. An admin may add you. Try again in 20secs");
+		noadminmsg = this.getConfig().getString("Config.Msg.NoAdminOnline", "Your not whitelisted and there is no admin online");
+		trylatermsg = this.getConfig().getString("Config.Msg.TryLater", "You just tried to join... try again in 20secs");
 	}
-	
-	public boolean wldeny(String player) {
-		this.refreshlist();
-		if(denylist.contains(player)) return false;
-		else {
-			if(whitelisted.contains(player)) {
-				whitelisted.remove(player);
-				this.getConfig().set("Whitelist", whitelisted);
-			}
-			denylist.add(player);
-			this.getConfig().set("Denylist", denylist);
-			this.saveConfig();
-			return true;
-		}
-	}
-	
-	public boolean wlremove(String player) {
-		this.refreshlist();
-		if(!(whitelisted.contains(player))) return false;
-		else {
-			whitelisted.remove(player);
-			this.getConfig().set("Whitelist", whitelisted);
-			this.saveConfig();
-			return true;
-		}
-	}
-	
-	public boolean wladd(String player) {
-		this.refreshlist();
-		if(whitelisted.contains(player)) return false;
-		else {
-			if(denylist.contains(player)) {
-				denylist.remove(player);
-				this.getConfig().set("Denylist", denylist);
-			}
-			whitelisted.add(player);
-			this.getConfig().set("Whitelist", whitelisted);
-			this.saveConfig();
-			return true;
-		}
-	}	
 
 }
